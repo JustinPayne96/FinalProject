@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: mysql
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: game
+      MYSQL_USER: game
+      MYSQL_PASSWORD: game
+    ports:
+      - "8306:3306"
+    networks:
+      - game
+
+  flyway:
+    container_name: flyway
+    image: flyway/flyway:latest
+    command: migrate
+    
+    environment:
+      FLYWAY_URL: jdbc:mysql://db
+      FLYWAY_SCHEMAS: game
+      FLYWAY_USER: game
+      FLYWAY_PASSWORD: game
+      FLYWAY_CONNECT_RETRIES: 60
+    volumes:
+      - ./src/test/resources/flyway/migrations:/flyway/sql
+      - ./src/test/resources/flyway/conf:/flyway/conf
+    depends_on:
+      - db
+    networks:
+      - game
+
+networks:
+  jeep:
+    driver: bridge
+    name: game-to-game
