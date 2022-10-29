@@ -15,6 +15,6 @@ public class BaseGameTest {
   private TestRestTemplate restTemplate;
   
   protected String getBaseUri() {
-    return String.format("http://localhost:%d/games", serverPort);
+    return String.format("http://localhost:%d/game", serverPort);
   }
 }

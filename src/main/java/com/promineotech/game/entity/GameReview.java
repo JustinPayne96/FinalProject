@@ -1,5 +1,7 @@
 package com.promineotech.game.entity;
 
+import java.util.Comparator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +11,26 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameReview {
-  private Long review_id;
-  private int game_id;
-  private String reviewer_name;
-  private String reviewer_timestamp;
+public class GameReview implements Comparable<GameReview> {
+  private Long reviewId;
+  private int gameId;
+  private String reviewerName;
+  private String reviewerTimestamp;
   private GameRating rating;
-  private String review_text;
+  private String reviewText;
+  
+  @JsonIgnore
+  public Long getReviewId() {
+    return reviewId;
+  }
+
+  @Override
+  public int compareTo(GameReview that) {
+    // @formatter:off
+    return Comparator
+        .comparing(GameReview::getGameId)
+        .thenComparing(GameReview::getRating)
+        .compare(this, that);
+    // @formatter:on
+  }
 }

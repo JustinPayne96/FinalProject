@@ -44,8 +44,33 @@ class FetchGameReviewTest extends FetchGameReviewTestSupport {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     
     // And: The Actual List Returned is the Same as the Expected List
+    List<GameReview> actual = response.getBody();
     List<GameReview> expected = buildExpected();
-    assertThat(response.getBody()).isEqualTo(expected);
+    
+    assertThat(actual).isEqualTo(expected);
   }
+  
+  @Test
+  void testThatAnErrorMessageIsReturnedWhenAnInvalidGameIsSupplied() {
+    
+    // Given: A Valid Game, Rating, and URI
+    GameRating rating = GameRating.FIVE_STARS;
+    int gameId = -1;
+    String uri = 
+        String.format("%s?rating=%s&gameId=%s", getBaseUri(), rating, gameId);
+    
+    // GameReview.class
+    // When: A Connection is Made to the URI
+    ResponseEntity<?> response =
+        getRestTemplate().exchange(uri, HttpMethod.GET, null,
+            new ParameterizedTypeReference<>() {});
+    
+    // Then: A Not Found (404) Status Code is Returned
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    
+    // And: An Error Message is Returned
+   
+  }
+
 
 }

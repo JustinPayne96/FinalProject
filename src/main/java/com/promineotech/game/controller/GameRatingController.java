@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 
-@RequestMapping("/game")
+@RequestMapping("/game/review")
 @OpenAPIDefinition(info = @Info(title = "Game Review Library"), servers = {
     @Server(url = "http://localhost:8080", description = "Local server.")})
 public interface GameRatingController {
@@ -30,8 +30,9 @@ public interface GameRatingController {
           @ApiResponse(
               responseCode = "200", 
               description = "A List of Reviews is Returned", 
-              content = @Content(mediaType = "application/json", 
-              schema = @Schema(implementation = GameReview.class))),
+              content = @Content(
+                  mediaType = "application/json", 
+                  schema = @Schema(implementation = GameReview.class))),
           @ApiResponse(
               responseCode = "400", 
               description = "The Request Parameters are Invalid", 
