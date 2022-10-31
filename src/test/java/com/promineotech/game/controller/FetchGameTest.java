@@ -31,7 +31,7 @@ class FetchGameTest extends FetchGameTestSupport {
     //Given: A Valid Game ESRB Rating and URI
     GameESRB ESRB = GameESRB.TEEN;
     String uri = 
-        String.format("%s?ESRB=%s", getBaseUri(), ESRB);
+        String.format("%s?ESRB=%s", getBaseUriForGames(), ESRB);
     
     // GameDetails.class
     //When: A Connection is Made to the URI
@@ -57,7 +57,7 @@ class FetchGameTest extends FetchGameTestSupport {
     //Given: A Valid Game ESRB Rating and URI
     GameESRB ESRB = GameESRB.ADULTS_ONLY_18PLUS;
     String uri = 
-        String.format("%s?ESRB=%s", getBaseUri(), ESRB);
+        String.format("%s?ESRB=%s", getBaseUriForGames(), ESRB);
     
     // GameDetails.class
     //When: A Connection is Made to the URI

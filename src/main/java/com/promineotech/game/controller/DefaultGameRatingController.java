@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import com.promineotech.game.entity.GameRating;
 import com.promineotech.game.entity.GameReview;
-import com.promineotech.game.service.GameReviewService;
+import com.promineotech.game.service.GameReviewRatingService;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DefaultGameRatingController implements GameRatingController {
 
   @Autowired
-  private GameReviewService gameReviewService;
+  private GameReviewRatingService gameReviewService;
   
   @Override
   public List<GameReview> fetchGameReviews(GameRating rating, int gameId) {

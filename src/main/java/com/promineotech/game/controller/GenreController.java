@@ -1,17 +1,12 @@
 package com.promineotech.game.controller;
 
 import java.util.List;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import com.promineotech.game.Constants;
-import com.promineotech.game.entity.GameRating;
-import com.promineotech.game.entity.GameReview;
+import com.promineotech.game.entity.Genre;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,32 +16,29 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 
-@Validated
-@RequestMapping("/game/review")
-@OpenAPIDefinition(info = @Info(title = "Game Review Library"), servers = {
+@RequestMapping("/genre")
+@OpenAPIDefinition(info = @Info(title = "Genre Library"), servers = {
     @Server(url = "http://localhost:8080", description = "Local server.")})
-public interface GameRatingController {
-  
-
-
+public interface GenreController {
   // @formatter:off
   @Operation(
-      summary = "Returns a List of Reviews",
-      description = "Returns a List of Review given an optional Rating and Game ID",
+      summary = "Returns a List of Genres",
+      description = "Returns a List of Genres given an optional Genre Name",
       responses = {
           @ApiResponse(
               responseCode = "200", 
-              description = "A List of Reviews is Returned", 
+              description = "A List of Genres is Returned", 
               content = @Content(
                   mediaType = "application/json", 
-                  schema = @Schema(implementation = GameReview.class))),
+                  schema = @Schema(implementation = Genre.class))),
           @ApiResponse(
               responseCode = "400", 
               description = "The Request Parameters are Invalid", 
-              content = @Content(mediaType = "application/json")),
+              content = @Content(
+                  mediaType = "application/json")),
           @ApiResponse(
               responseCode = "404", 
-              description = "No Reviews were Found with the Input Criteria", 
+              description = "No Genre was Found with the Input Criteria", 
               content = @Content(
                   mediaType = "application/json")),
           @ApiResponse(
@@ -54,30 +46,20 @@ public interface GameRatingController {
               description = "An Unplanned Error Occurred.", 
               content = @Content(
                   mediaType = "application/json"))
-          
       },
       parameters = {
           @Parameter(
-              name = "rating", 
+              name = "genreName", 
               allowEmptyValue = false, 
               required = false, 
-              description = "The Game Rating (i.e, 'ONE_STAR')"),
-          @Parameter(
-              name = "gameId", 
-              allowEmptyValue = false, 
-              required = false, 
-              description = "The Game ID (i.e, 1)")          
-      }
+              description = "The Genre name (i.e., 'Action')"),
+      }      
       )
-
+  
   @GetMapping
   @ResponseStatus(code = HttpStatus.OK)
-  List<GameReview> fetchGameReviews(
+  List<Genre> fetchGenres(
       @RequestParam(required = false) 
-        GameRating rating,
-      @Max(Constants.GAME_ID_MAX_LENGTH)
-      @Positive
-      @RequestParam(required = false) 
-        int gameId);
-  // @formatter:on
+        String genreName);
+//@formatter:on
 }

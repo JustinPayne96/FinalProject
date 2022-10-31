@@ -1,17 +1,19 @@
 package com.promineotech.game.dao;
 
-import java.util.List;
-import com.promineotech.game.entity.GameRating;
-import com.promineotech.game.entity.GameReview;
+import javax.validation.constraints.NotNull;
+import com.promineotech.game.entity.Review;
+import com.promineotech.game.entity.ReviewerName;
 
 public interface GameReviewDao {
 
-  /**
-   * 
-   * @param rating
-   * @param gameId
-   * @return
-   */
-  List<GameReview> fetchGameReview(GameRating rating, int gameId);
+  ReviewerName fetchReviewer(@NotNull String reviewerName);
 
+  boolean deleteGameReview(String reviewId);
+
+  boolean updateGameReview(Review review);
+
+
+ 
+
+ 
 }

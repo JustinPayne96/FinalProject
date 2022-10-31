@@ -1,8 +1,14 @@
 package com.promineotech.game.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.ParameterizedTypeReference;
@@ -32,7 +38,7 @@ class FetchGameReviewTest extends FetchGameReviewTestSupport {
     GameRating rating = GameRating.FIVE_STARS;
     int gameId = 3;
     String uri = 
-        String.format("%s?rating=%s&gameId=%s", getBaseUri(), rating, gameId);
+        String.format("%s?rating=%s&gameId=%s", "/game/review", rating, gameId);
     
     // GameReview.class
     // When: A Connection is Made to the URI
@@ -51,17 +57,17 @@ class FetchGameReviewTest extends FetchGameReviewTestSupport {
   }
   
   @Test
-  void testThatAnErrorMessageIsReturnedWhenAnInvalidGameIsSupplied() {
+  void testThatAnErrorMessageIsReturnedWhenAnUnknownGameIsSupplied() {
     
     // Given: A Valid Game, Rating, and URI
     GameRating rating = GameRating.FIVE_STARS;
-    int gameId = -1;
+    int gameId = 20;
     String uri = 
-        String.format("%s?rating=%s&gameId=%s", getBaseUri(), rating, gameId);
+        String.format("%s?rating=%s&gameId=%s", "/game/review", rating, gameId);
     
     // GameReview.class
     // When: A Connection is Made to the URI
-    ResponseEntity<?> response =
+    ResponseEntity<Map<String, Object>> response =
         getRestTemplate().exchange(uri, HttpMethod.GET, null,
             new ParameterizedTypeReference<>() {});
     
@@ -69,8 +75,42 @@ class FetchGameReviewTest extends FetchGameReviewTestSupport {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     
     // And: An Error Message is Returned
-   
+    Map<String, Object> error = response.getBody();
+    
+    assertErrorMessageValid(error, HttpStatus.NOT_FOUND);
   }
 
+  
+  @ParameterizedTest
+  @MethodSource("com.promineotech.game.controller.FetchGameReviewTest#parametersForInvalidInput")
+  void testThatAnErrorMessageIsReturnedWhenAnInvalidGameIsSupplied(
+      String rating, String gameId, String reason) {
+    
+    // Given: A Valid Game, Rating, and URI
+    String uri = 
+        String.format("%s?rating=%s&gameId=%s", "/game/review", rating, gameId);
+    
+    // GameReview.class
+    // When: A Connection is Made to the URI
+    ResponseEntity<Map<String, Object>> response =
+        getRestTemplate().exchange(uri, HttpMethod.GET, null,
+            new ParameterizedTypeReference<>() {});
+    
+    // Then: A Not Found (400) Status Code is Returned
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    
+    // And: An Error Message is Returned
+    Map<String, Object> error = response.getBody();
+    assertErrorMessageValid(error, HttpStatus.BAD_REQUEST);
+  }
+  
+  static Stream<Arguments> parametersForInvalidInput(){
+    
+    // @formatter:off
+    return Stream.of(
+            arguments("FIVE_STARS", "A@#%$d" , "Game Identifier contains non-numeric characters")
+    // @formatter:on
+        );
+  }
+  }
 
-}

@@ -1,40 +1,44 @@
 package com.promineotech.game.service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.promineotech.game.dao.GameReviewDao;
-import com.promineotech.game.entity.GameRating;
-import com.promineotech.game.entity.GameReview;
-import lombok.extern.slf4j.Slf4j;
+import com.promineotech.game.entity.Review;
+import com.promineotech.game.entity.ReviewRequest;
+import com.promineotech.game.entity.ReviewerName;
 
 @Service
-@Slf4j
 public class DefaultGameReviewService implements GameReviewService {
 
   @Autowired
   private GameReviewDao gameReviewDao;
   
-  @Transactional(readOnly = true)
+  @Transactional
   @Override
-  public List<GameReview> fetchGameReview(GameRating rating, int gameId) {
-    log.info("The fetchGameReview method was called with rating={} and gameId={}",
-        rating, gameId);
+  public Review createReview(ReviewRequest reviewRequest) {
+   ReviewerName reviewerName = gameReviewDao.fetchReviewer(reviewRequest.getReviewerName());
     
-    List<GameReview> gameReview = gameReviewDao.fetchGameReview(rating, gameId);
-    
-    if(gameReview.isEmpty()) {
-      String msg = String.format("No Game Reviews found with rating=%s and gameId=%s",
-          rating, gameId);
-      
-      throw new NoSuchElementException(msg);
-    }
-    
-    Collections.sort(gameReview);
-    return gameReview;
+    return null;
   }
 
+  @Transactional(readOnly = false)
+  @Override
+  public void deleteGameReview(String reviewId) {
+    if(!gameReviewDao.deleteGameReview(reviewId)) {
+      throw new NoSuchElementException(
+          "Review with ID=" + reviewId + " does not exist.");
+    }
+  }
+
+  @Override
+  public Review updateGameReview(Review review) {
+    if(!gameReviewDao.updateGameReview(review)) {
+      throw new NoSuchElementException(
+          "Review with ID=" + review.getReview() + " does not exist.");
+    
+  }
+    return review;
+  }
 }

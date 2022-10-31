@@ -1,17 +1,18 @@
 package com.promineotech.game.controller;
 
-import java.util.List;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Positive;
+import java.util.Map;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import com.promineotech.game.Constants;
-import com.promineotech.game.entity.GameRating;
-import com.promineotech.game.entity.GameReview;
+import com.promineotech.game.entity.Review;
+import com.promineotech.game.entity.ReviewRequest;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,31 +23,31 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 
 @Validated
-@RequestMapping("/game/review")
-@OpenAPIDefinition(info = @Info(title = "Game Review Library"), servers = {
+@RequestMapping("/review")
+@OpenAPIDefinition(info = @Info(title = "Game Review Entry Service"), servers = {
     @Server(url = "http://localhost:8080", description = "Local server.")})
-public interface GameRatingController {
+public interface GameReviewController {
   
 
 
   // @formatter:off
   @Operation(
-      summary = "Returns a List of Reviews",
-      description = "Returns a List of Review given an optional Rating and Game ID",
+      summary = "Create A Review for Game",
+      description = "Returns the Create Review for Game",
       responses = {
           @ApiResponse(
-              responseCode = "200", 
-              description = "A List of Reviews is Returned", 
+              responseCode = "201", 
+              description = "A Created Game Review is Returned", 
               content = @Content(
                   mediaType = "application/json", 
-                  schema = @Schema(implementation = GameReview.class))),
+                  schema = @Schema(implementation = Review.class))),
           @ApiResponse(
               responseCode = "400", 
               description = "The Request Parameters are Invalid", 
               content = @Content(mediaType = "application/json")),
           @ApiResponse(
               responseCode = "404", 
-              description = "No Reviews were Found with the Input Criteria", 
+              description = "A Review was Not Found with the Input Criteria", 
               content = @Content(
                   mediaType = "application/json")),
           @ApiResponse(
@@ -58,26 +59,20 @@ public interface GameRatingController {
       },
       parameters = {
           @Parameter(
-              name = "rating", 
-              allowEmptyValue = false, 
-              required = false, 
-              description = "The Game Rating (i.e, 'ONE_STAR')"),
-          @Parameter(
-              name = "gameId", 
-              allowEmptyValue = false, 
-              required = false, 
-              description = "The Game ID (i.e, 1)")          
+              name = "reviewRequest", 
+              required = true, 
+              description = "The Order as JSON")      
       }
       )
 
-  @GetMapping
-  @ResponseStatus(code = HttpStatus.OK)
-  List<GameReview> fetchGameReviews(
-      @RequestParam(required = false) 
-        GameRating rating,
-      @Max(Constants.GAME_ID_MAX_LENGTH)
-      @Positive
-      @RequestParam(required = false) 
-        int gameId);
+  @PostMapping
+  @ResponseStatus(code = HttpStatus.CREATED)
+  Review createGameReview(@Valid @RequestBody ReviewRequest reviewRequest);
   // @formatter:on
+  
+  @DeleteMapping("/edit/delete")
+  Map<String, Object> deleteGameReview(@RequestParam String reviewId);
+  
+  @PutMapping("/edit/update")
+  Review updateGameReview(@RequestBody Review review);
 }

@@ -13,8 +13,18 @@ public class BaseGameTest {
   @Autowired
   @Getter
   private TestRestTemplate restTemplate;
-  
-  protected String getBaseUri() {
+  /**
+   * 
+   * @return
+   */
+  protected String getBaseUriForGames() {
     return String.format("http://localhost:%d/game", serverPort);
+  }
+  /**
+   * 
+   * @return
+   */
+  protected String getBaseUriForReviews() {
+    return String.format("http://localhost:%d/review", serverPort);
   }
 }

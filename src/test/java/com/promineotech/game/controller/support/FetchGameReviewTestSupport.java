@@ -1,8 +1,11 @@
 package com.promineotech.game.controller.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import org.springframework.http.HttpStatus;
 import com.promineotech.game.entity.GameRating;
 import com.promineotech.game.entity.GameReview;
 
@@ -32,5 +35,20 @@ public class FetchGameReviewTestSupport extends BaseGameTest {
     Collections.sort(list);
     return list;
   }
-
+  
+  /**
+   * 
+   * @param error
+   * @param status
+   */
+  protected void assertErrorMessageValid(Map<String, Object> error, HttpStatus status) {
+    // @formatter:off
+    assertThat(error)
+    .containsKey("message")
+    .containsEntry("status code", status.value())
+    .containsEntry("uri", "/game/review")
+    .containsKey("timestamp")
+    .containsEntry("reason", status.getReasonPhrase());
+    // @formatter:on
+}
 }
