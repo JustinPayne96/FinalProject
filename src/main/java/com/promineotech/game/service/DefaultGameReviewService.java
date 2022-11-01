@@ -36,7 +36,7 @@ public class DefaultGameReviewService implements GameReviewService {
   public Review updateGameReview(Review review) {
     if(!gameReviewDao.updateGameReview(review)) {
       throw new NoSuchElementException(
-          "Review with ID=" + review.getReview() + " does not exist.");
+          "Review with ID=" + review.getReviewId() + " does not exist.");
     
   }
     return review;

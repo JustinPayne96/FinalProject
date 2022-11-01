@@ -19,9 +19,9 @@ public class Review {
   private GameRating rating;
   private String reviewText;
   
-  @JsonIgnore
+ @JsonIgnore
   public Long getReviewId() {
-    return reviewId;
+   return reviewId;
   
 
   }

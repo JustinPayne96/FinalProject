@@ -65,6 +65,7 @@ public class DefaultGameReviewDao implements GameReviewDao {
   public boolean updateGameReview(Review review) {
     String sql = """
             UPDATE review SET
+              game_id = :game_id,
               reviewer_name = :reviewer_name,
               review_rating = :review_rating,
               reviewer_timestamp = :reviewer_timestamp,
@@ -74,9 +75,10 @@ public class DefaultGameReviewDao implements GameReviewDao {
     
     // @formatter:off
     Map<String, Object> params =
-        Map.of(
+        Map.of(    
+            "game_id", review.getGameId(),
             "reviewer_name", review.getReviewerName(), 
-            "review_rating", review.getRating(),
+            "review_rating", review.getRating().toString(),
             "reviewer_timestamp", review.getReviewerTimestamp(),
             "review_text", review.getReviewText(),
             "review_id", review.getReviewId()
